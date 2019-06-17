@@ -1,0 +1,7 @@
+mongo:
+  url: "mongodb://94.191.9.80:27017"
+checkpoint_path: "./"
+doc_managers:
+  elastic:
+    host: "127.0.0.1:9200"
+

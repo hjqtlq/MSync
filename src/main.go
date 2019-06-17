@@ -1,7 +1,20 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"mongosync"
+	"time"
+)
 
 func main() {
-	fmt.Print("aaaa")
+	mongosync.Run("D:\\mongosync\\src\\config.yaml")
+
+	fmt.Println("进程启动...")
+	sum := 0
+	for {
+		sum++
+		fmt.Println("sum:", sum)
+		time.Sleep(time.Second)
+	}
+
 }
