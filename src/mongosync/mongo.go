@@ -11,15 +11,14 @@ import (
 //}
 
 func NewClient(url string) *mongo.Client {
-	client, err := mongo.Connect(s.ctx, options.Client().ApplyURI(url))
+	client, err := mongo.Connect(SignalMonitor.Context, options.Client().ApplyURI(url))
 	if err != nil {
-		log.Println(err)
+		log.Println(err, url)
 		return nil
 	}
-	defer s.beforeClose(func() {
+	defer SignalMonitor.BeforeClose(func() {
 		log.Println("Close mongo connection.", url)
-		err := client.Disconnect(s.ctx)
-		if err != nil {
+		if err := client.Disconnect(SignalMonitor.Context); err != nil {
 			log.Println(err)
 		}
 	})

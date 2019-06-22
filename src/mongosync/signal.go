@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-var s = &signalMonitor{}
+var SignalMonitor = &signalMonitor{}
 
 type signalMonitor struct {
-	ctx        context.Context
+	Context    context.Context
 	cancel     context.CancelFunc
 	signalChan chan os.Signal
 
@@ -20,27 +20,27 @@ type signalMonitor struct {
 }
 
 func init() {
-	s.ctx, s.cancel = context.WithCancel(context.Background())
+	SignalMonitor.Context, SignalMonitor.cancel = context.WithCancel(context.Background())
 	//创建监听退出chan
-	s.signalChan = make(chan os.Signal)
+	SignalMonitor.signalChan = make(chan os.Signal)
 	//监听指定信号 ctrl+c kill
-	signal.Notify(s.signalChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	signal.Notify(SignalMonitor.signalChan, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	go func() {
 		select {
-		case <-s.signalChan:
-			s.cancel()
+		case <-SignalMonitor.signalChan:
+			SignalMonitor.cancel()
 			time.Sleep(time.Second * 1)
 			os.Exit(0)
 		}
 	}()
 
-	s.wg = &sync.WaitGroup{}
+	SignalMonitor.wg = &sync.WaitGroup{}
 }
 
-func (signalMonitor *signalMonitor) beforeClose(cb func()) {
+func (signalMonitor *signalMonitor) BeforeClose(cb func()) {
 	go func() {
 		select {
-		case <-s.ctx.Done():
+		case <-SignalMonitor.Context.Done():
 			cb()
 			time.Sleep(time.Second)
 		}

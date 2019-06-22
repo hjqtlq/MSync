@@ -1,6 +1,8 @@
 package mongosync
 
-import "strings"
+import (
+	"strings"
+)
 
 type Namespace struct {
 	Ns   string
@@ -8,15 +10,12 @@ type Namespace struct {
 	Coll string
 }
 
-func NewNamespace(ns string) *Namespace {
-	n := &Namespace{}
-	temp := strings.Split(ns, ".")
+func ParseNamespace(ns string) (db, coll string) {
+	temp := strings.SplitN(ns, ".", 2)
 	if len(temp) == 2 {
-		n.Db = temp[0]
-		n.Coll = temp[1]
+		return temp[0], temp[1]
 	}
-
-	return n
+	return "", ""
 }
 
 var nsm = &namespaceManager{}
